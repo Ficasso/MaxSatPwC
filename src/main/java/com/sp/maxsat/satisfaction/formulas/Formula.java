@@ -1,12 +1,16 @@
-package com.sp.maxsat.satisfaction;
+package com.sp.maxsat.satisfaction.formulas;
 
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class Formula {
+public abstract class Formula {
     private int first;
     private int second;
     private int third;
+
+    public Formula(int first, int second, int third) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
+    }
 
     public int getThird() {
         return third;

@@ -1,23 +1,32 @@
 package com.sp.maxsat.satisfaction;
 
-import java.util.ArrayList;
+import com.sp.maxsat.satisfaction.formulas.SimpleFormula;
+import com.sp.maxsat.satisfaction.formulas.WeightedFormula;
+import com.sp.maxsat.satisfaction.satlogic.Logical;
+
 import java.util.List;
-import java.util.Map;
 
 public class MaxSat {
 
-    private boolean maxSat(Map<Integer, Formula> clauses, List<Integer> clausesToCheck, LogicalEnum logicalEnum) {
-        var checked = new ArrayList<Boolean>();
-        for (int i = 0; i < clausesToCheck.size(); i++) {
-            var clause = clauses.get(clausesToCheck.get(i));
-            if (logicalEnum == LogicalEnum.LESS) {
-                checked.add(clause.getFirst() < clause.getSecond() && clause.getSecond() < clause.getThird());
-            } else if (logicalEnum == LogicalEnum.EQUAL) {
-                checked.add(clause.getFirst() == clause.getSecond() && clause.getSecond() == clause.getThird());
-            } else if(logicalEnum == LogicalEnum.GREATER) {
-                checked.add(clause.getFirst() > clause.getSecond() && clause.getSecond() > clause.getThird());
-            }
-        }
-        return checked.stream().allMatch(bool -> bool);
+    private boolean maxSat(List<SimpleFormula> formulas, Logical logicalComparator) {
+        return formulas.stream()
+                .allMatch(logicalComparator::compare);
+    }
+
+    private boolean filteredWeightedMaxSat(List<WeightedFormula> formulas, Logical logicalComparator, int minWeight) {
+        return formulas.stream()
+                .filter(formula -> formula.getWeight() > minWeight)
+                .allMatch(logicalComparator::compare);
+    }
+
+    private double weightedMaxSat(List<WeightedFormula> formulas, Logical logicalComparator){
+        var totalWeights = formulas.stream()
+                .mapToInt(WeightedFormula::getWeight)
+                .sum();
+        var satValue = formulas.stream()
+                .filter(logicalComparator::compare)
+                .mapToInt(WeightedFormula::getWeight)
+                .sum();
+        return (double)satValue/totalWeights;
     }
 }
