@@ -1,15 +1,15 @@
 package com.sp.maxsat.pwc;
 
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @RestController
 @RequestMapping("pwc")
 public class PWC_Controller {
 
+    private List<PwcModelDto> examples;
 
     @PostMapping
     public String createPwc(@RequestBody PwcModelDto model) {
@@ -19,6 +19,24 @@ public class PWC_Controller {
         }
         return "hello";
     }
+
+    @GetMapping
+    public void insertExamples(){
+        var pwcModel = new PwcModelDto();
+        pwcModel.setElements(Arrays.asList("transport", "sklepy", "parki"));
+        pwcModel.setValues(Collections.singletonList(Arrays.asList(23,10,4)));
+        examples.add(pwcModel);
+        pwcModel.setValues(Collections.singletonList(Arrays.asList(3,2,1)));
+        examples.add(pwcModel);
+        pwcModel.setValues(Collections.singletonList(Arrays.asList(10,3,1)));
+        examples.add(pwcModel);
+        var random = new Random();
+        for(int i = 0; i < 100; i++){
+            pwcModel.setValues(Collections.singletonList(Arrays.asList(random.nextInt(100), random.nextInt(100), random.nextInt(100))));
+            examples.add(pwcModel);
+        }
+    }
+
 
 
     private boolean isValid(PwcModelDto modelDto){
